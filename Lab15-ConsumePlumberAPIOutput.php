@@ -187,4 +187,7 @@ in Line 22-49.
 ?>
 
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
