@@ -1,3 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>POST Body</title>
+    <style>
+        form {
+            margin: 30px 0px;
+        }
+
+        input {
+            display: block;
+            margin: 10px 15px;
+            padding: 8px 10px;
+            font-size: 16px;
+        }
+
+        div {
+            font-size: 20px;
+            margin: 0px 15px;
+        }
+
+        h2 {
+            color: green;
+            margin: 20px 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>diabetes prediction</h2>
+    <form method="post">
+        <input type="number" name="pregnant" placeholder="Enter how many pregnancies">
+        <input type="number" name="glucose" placeholder="glucose levels">
+        <input type="number" name="pressure" placeholder="blood pressure">
+        <input type="number" name="tricep" placeholder="tricep">
+        <input type="number" name="insulin" placeholder="how insulin">
+        <input type="number" name="mass" placeholder="Enter mass">
+        <input type="number" name="pedigree" placeholder="Enter pedigree">
+        <input type="number" name="age" placeholder="age">
+        <input type="submit" name="submit-btn" value="submit">
+    </form>
+    <br>
+</body>
+
+</html>
+
 <?php
 # *****************************************************************************
 # Lab 14: Consume data from the Plumber API Output (using PHP) ----
@@ -36,7 +83,7 @@ $arg_insulin = 0;
 $arg_mass = 33.6;
 $arg_pedigree = 0.627;
 $arg_age = 50;
-*/ 
+*/
 
 // The prediction should be "negative" for diabetes
 $arg_pregnant = 1;
@@ -48,20 +95,51 @@ $arg_mass = 26.6;
 $arg_pedigree = 0.351;
 $arg_age = 31;
 
-$params = array('arg_pregnant' => $arg_pregnant, 'arg_glucose' => $arg_glucose,
-                'arg_pressure' => $arg_pressure, 'arg_triceps' => $arg_triceps,
-                'arg_insulin' => $arg_insulin, 'arg_mass' => $arg_mass,
-                'arg_pedigree' => $arg_pedigree, 'arg_age' => $arg_age);
+$params = array(
+    'arg_pregnant' => $arg_pregnant, 'arg_glucose' => $arg_glucose,
+    'arg_pressure' => $arg_pressure, 'arg_triceps' => $arg_triceps,
+    'arg_insulin' => $arg_insulin, 'arg_mass' => $arg_mass,
+    'arg_pedigree' => $arg_pedigree, 'arg_age' => $arg_age
+);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // API endpoint URL
+    
+
+    // Check if the form values are numeric
+    if (is_numeric($_POST['pregnant']) 
+    && is_numeric($_POST['glucose'] )
+    && is_numeric($_POST['pressure'] )
+    && is_numeric($_POST['tricep'] )
+    && is_numeric($_POST['insulin'] )
+    && is_numeric($_POST['mass'] )
+    && is_numeric($_POST['pedigree'] )
+    && is_numeric($_POST['age'] )
+    ) {
+        // Form data
+        $formData = array(
+            'arg_pregnant' => $_POST['pregnant'],
+            'arg_glucose' => $_POST['glucose'],
+            'arg_pressure' => $_POST['pressure'],
+            'arg_triceps' => $_POST['tricep'],
+            'arg_insulin' => $_POST['insulin'],
+            'arg_mass' => $_POST['mass'],
+            'arg_pedigree' => $_POST['pedigree'],
+            'arg_age' => $_POST['age'],
+            // Add more parameters as needed
+        );
+    }
+}
 
 // STEP 3: Set the cURL options
 // CURLOPT_RETURNTRANSFER: true to return the transfer as a string of the
 // return value of curl_exec() instead of outputting it directly.
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-$apiUrl = $apiUrl . '?' . http_build_query($params);
+$apiUrl = $apiUrl . '?' . http_build_query($formData);
 curl_setopt($curl, CURLOPT_URL, $apiUrl);
 
 // For testing:
-echo "The generated URL sent to the API is:<br>".$apiUrl."<br><br>";
+echo "The generated URL sent to the API is:<br>" . $apiUrl . "<br><br>";
 
 // Make a GET request
 $response = curl_exec($curl);
@@ -88,12 +166,12 @@ $data = json_decode($response, true);
 if (isset($data['0'])) {
     // API request was successful
     // Access the data returned by the API
-	echo "The predicted diabetes status is:<br>";
-	
+    echo "The predicted diabetes status is:<br>";
+
     // Process the data
-	foreach($data as $repository) {
-		echo $repository['0'],$repository['1'],$repository['2'],"<br>";
-	}
+    foreach ($data as $repository) {
+        echo $repository['0'], $repository['1'], $repository['2'], "<br>";
+    }
 } else {
     // API request failed or returned an error
     // Handle the error appropriately
@@ -107,3 +185,6 @@ Create a form in the web user interface to post the parameter values
 in Line 22-49.
 */
 ?>
+
+
+
